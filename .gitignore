@@ -1,0 +1,4 @@
+# fontes locais das imagens — a LP roda com os .webp
+img/*.png
+.vercel
+.DS_Store

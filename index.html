@@ -1,0 +1,1047 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ESPUMA™ — o curso de lavar as mãos</title>
+<meta name="description" content="O método dos 20 segundos. 7 aulas curtas, uma pia, nenhuma desculpa. Infoproduto 100% fictício, demonstração de aula.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   ESPUMA™ — sistema visual
+   amarelo + creme + tinta preta, mascote 3D, grão, tipografia gigante
+   ============================================================ */
+:root{
+  --ink:#17130E;
+  --ink-soft:#3D352A;
+  --cream:#FBF2DE;
+  --cream-d:#F2E3C2;
+  --yellow:#FFC93C;
+  --yellow-hi:#FFE06A;
+  --amber:#E89611;
+  --foam:#DDEFF7;
+  --dark:#141210;
+  --r:22px;
+  --pad:clamp(20px,4vw,64px);
+  --easing:cubic-bezier(.22,1,.36,1);
+  --spring:cubic-bezier(.34,1.42,.64,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  background:var(--cream);color:var(--ink);
+  font-family:'Archivo',system-ui,sans-serif;
+  font-size:17px;line-height:1.5;
+  overflow-x:hidden;
+}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+
+/* --- grão global (textura das referências) --- */
+.grain{
+  position:fixed;inset:-50%;z-index:9999;pointer-events:none;
+  opacity:.42;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+  animation:grainShift 6s steps(6) infinite;
+}
+@keyframes grainShift{
+  0%{transform:translate(0,0)}20%{transform:translate(-4%,3%)}40%{transform:translate(3%,-4%)}
+  60%{transform:translate(-3%,-3%)}80%{transform:translate(4%,4%)}100%{transform:translate(0,0)}
+}
+
+/* --- tipografia --- */
+.display{
+  font-weight:900;line-height:.83;letter-spacing:-.035em;
+  text-transform:uppercase;
+}
+h1.display{font-size:clamp(2.9rem,9.4vw,10.5rem)}
+h2.display{font-size:clamp(2.1rem,5.2vw,4.9rem);line-height:.9}
+.script{font-family:'Caveat',cursive;font-weight:600;text-transform:none;letter-spacing:0}
+.mono{font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase}
+.eyebrow{
+  font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:.2em;
+  text-transform:uppercase;display:inline-flex;align-items:center;gap:9px;
+}
+.eyebrow::before{content:"";width:7px;height:7px;background:currentColor}
+.lead{font-size:clamp(1rem,1.5vw,1.28rem);line-height:1.5;max-width:52ch}
+
+/* --- reveal (motion base das referências) --- */
+.js [data-reveal]{opacity:0;transform:translateY(28px);transition:opacity .9s var(--easing),transform .9s var(--easing);transition-delay:calc(var(--i,0)*70ms)}
+.js [data-reveal].in{opacity:1;transform:none}
+/* trava do estado final: se a transição não chegou a rodar (aba em segundo plano,
+   renderer sem frames), o elemento assume o valor final sem interpolar */
+.js [data-reveal].done{opacity:1;transform:none;transition:none}
+.js .done .word i{transform:none;transition:none}
+.word{display:inline-block;overflow:hidden;vertical-align:top}
+.js .word i{display:inline-block;font-style:normal;transform:translateY(105%) rotate(4deg);transition:transform 1s var(--easing);transition-delay:calc(var(--w,0)*38ms)}
+.in .word i,.split-in .word i{transform:none}
+
+/* --- botões: tecla 3D ---
+   O magnetismo entra por --mx/--my (o JS mexe só nessas duas), o afundar por
+   --press/--scale. Assim o botão pode seguir o cursor e ser apertado ao mesmo
+   tempo, sem os dois brigarem pelo mesmo transform. */
+.btn{
+  --mx:0px; --my:0px; --press:0px; --scale:1;
+  --btn-bg:var(--ink); --btn-fg:var(--cream); --btn-floor:#000;
+  --btn-bg-hover:#241D15; --btn-ring:rgba(255,201,60,.55);
+  position:relative;display:inline-flex;align-items:center;gap:14px;
+  padding:15px 18px 15px 26px;border-radius:14px;
+  background:var(--btn-bg);color:var(--btn-fg);
+  font-weight:800;font-size:.95rem;letter-spacing:.01em;
+  border:0;border-bottom:4px solid var(--btn-floor);
+  box-shadow:0 6px 0 0 var(--btn-floor);
+  transform:translate3d(var(--mx),calc(var(--my) + var(--press)),0) scale(var(--scale));
+  transition:transform .34s var(--spring),box-shadow .12s ease,background .2s ease;
+  will-change:transform;user-select:none;
+}
+.btn:hover{--scale:1.02;background:var(--btn-bg-hover);box-shadow:0 8px 0 0 var(--btn-floor)}
+.btn:active,.btn.is-press{--scale:.98;--press:4px;box-shadow:0 2px 0 0 var(--btn-floor);transition:transform .1s ease,box-shadow .1s ease}
+.btn:focus-visible{outline:4px solid var(--btn-ring);outline-offset:3px}
+.btn .arrow{
+  width:32px;height:32px;border-radius:9px;flex:0 0 auto;
+  background:var(--yellow);color:var(--ink);display:grid;place-items:center;
+  transition:transform .34s var(--spring);
+}
+.btn:hover .arrow{transform:translateX(3px)}
+.btn:active .arrow,.btn.is-press .arrow{transform:translateX(0) scale(.94)}
+/* tecla amarela — para fundo claro/creme */
+.btn--yellow{--btn-bg:var(--yellow);--btn-fg:var(--ink);--btn-floor:#A8690A;
+  --btn-bg-hover:var(--yellow-hi);--btn-ring:rgba(23,19,14,.4)}
+.btn--yellow .arrow{background:var(--ink);color:var(--yellow)}
+/* tecla creme — o antigo ghost */
+.btn--ghost{--btn-bg:var(--cream);--btn-fg:var(--ink);--btn-floor:var(--ink);
+  --btn-bg-hover:#fff;--btn-ring:rgba(23,19,14,.35)}
+.btn--ghost .arrow{background:var(--ink);color:var(--yellow)}
+.btn--big{padding:20px 22px 20px 32px;font-size:1.05rem;border-radius:16px}
+.btn--big .arrow{width:38px;height:38px;border-radius:11px}
+
+/* --- nav --- */
+.nav{position:fixed;top:18px;left:0;right:0;z-index:900;padding:0 18px;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+  transition:transform .55s var(--easing);}
+.nav.hide{transform:translateY(-160%)}
+.logo{background:var(--ink);color:var(--cream);padding:8px 11px;line-height:.92;
+  font-weight:900;font-size:.92rem;letter-spacing:-.02em;text-transform:uppercase;
+  box-shadow:4px 4px 0 rgba(0,0,0,.14)}
+.logo sup{font-size:.55em;vertical-align:super}
+.nav-pill{
+  display:flex;align-items:center;gap:16px;background:var(--ink);color:var(--cream);
+  border-radius:100px;padding:12px 20px;box-shadow:0 12px 30px rgba(20,18,16,.18);
+}
+.nav-pill a{font-weight:700;font-size:.86rem;letter-spacing:.02em}
+.nav-pill .sep{width:1px;height:16px;background:rgba(251,242,222,.28)}
+.nav-pill .status{font-family:'DM Mono',monospace;font-size:.74rem;opacity:.72}
+.nav-pill .dot{width:7px;height:7px;border-radius:50%;background:#7CE38B;box-shadow:0 0 0 0 rgba(124,227,139,.7);animation:pulse 2.4s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 9px rgba(124,227,139,0)}100%{box-shadow:0 0 0 0 rgba(124,227,139,0)}}
+.nav-cta{background:var(--cream);border-radius:14px;padding:7px 7px 7px 18px;display:flex;align-items:center;gap:12px;
+  box-shadow:0 5px 0 0 var(--ink);transition:transform .3s var(--spring),box-shadow .12s ease;font-family:'DM Mono',monospace;font-size:.74rem;letter-spacing:.12em;text-transform:uppercase}
+.nav-cta i{width:36px;height:36px;border-radius:9px;background:var(--ink);color:var(--cream);display:grid;place-items:center;font-style:normal;transition:transform .45s var(--easing)}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 7px 0 0 var(--ink)}
+.nav-cta:active{transform:translateY(4px);box-shadow:0 1px 0 0 var(--ink)}
+.nav-cta:hover i{transform:translateX(3px)}
+
+/* --- HERO --- */
+.hero-wrap{height:210vh;position:relative}
+.hero{
+  position:sticky;top:0;height:100vh;overflow:hidden;
+  background:var(--yellow);
+  display:grid;place-items:center;
+  transform-origin:50% 42%;
+}
+.hero-grid{position:absolute;inset:0;pointer-events:none;opacity:.5}
+.hero-grid .l{position:absolute;background:rgba(23,19,14,.13)}
+.hero-grid .plus{position:absolute;width:11px;height:11px;color:rgba(23,19,14,.35);font-size:11px;line-height:11px;font-family:'DM Mono',monospace}
+.hero-inner{position:relative;width:100%;height:100%;display:grid;place-items:center;padding:0 var(--pad)}
+.hero-blob{
+  position:absolute;width:min(40vw,470px);left:50%;top:41%;transform:translate(-50%,-50%);
+  z-index:1;filter:drop-shadow(0 40px 60px rgba(139,94,0,.22));
+  animation:floatY 7s ease-in-out infinite;
+}
+@keyframes floatY{0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-50%,calc(-50% - 22px))}}
+.hero-title{position:relative;z-index:3;text-align:center;width:100%;max-width:1100px;transform:translateY(-3vh)}
+.hero-title h1,.hero-title .kicker{pointer-events:none}
+.hero-title .kicker{display:block;font-size:clamp(1.4rem,3vw,2.6rem);transform:rotate(-3deg);margin-bottom:-.4em}
+.hero-title h1{color:var(--ink);text-shadow:0 2px 0 rgba(255,255,255,.18)}
+.hero-title h1 .out{-webkit-text-stroke:2px var(--ink);color:transparent;text-shadow:none}
+.hero-mascote{
+  position:absolute;z-index:4;right:clamp(4px,4vw,90px);bottom:4vh;
+  width:clamp(170px,19vw,300px);
+  filter:drop-shadow(0 30px 40px rgba(139,94,0,.25));
+  animation:bob 4.2s ease-in-out infinite;
+}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-16px) rotate(1.5deg)}}
+.hero-sub{position:relative;z-index:5;margin:clamp(18px,3vh,34px) auto 0;max-width:46ch}
+.hero-sub p{font-size:clamp(.95rem,1.15vw,1.1rem);font-weight:500;margin-bottom:20px}
+.hero-actions{position:relative;z-index:5;display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:22px}
+.hud{position:absolute;z-index:6;font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(23,19,14,.62)}
+.hud.tl{left:var(--pad);top:96px}
+.hud.tr{right:var(--pad);top:96px;text-align:right}
+.hud.bl{left:var(--pad);bottom:28px}
+.hud.br{right:var(--pad);bottom:28px;text-align:right}
+.bubble{position:absolute;border-radius:50%;z-index:2;
+  background:radial-gradient(circle at 32% 28%,#fff 0 8%,rgba(255,255,255,.55) 22%,rgba(255,255,255,.12) 55%,rgba(255,255,255,.35) 100%);
+  box-shadow:inset -6px -8px 14px rgba(255,255,255,.5),0 8px 20px rgba(139,94,0,.14);}
+.sticker{position:absolute;z-index:5;background:var(--cream);color:var(--ink);
+  border:2px solid var(--ink);border-radius:100px;padding:9px 15px;
+  font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
+  box-shadow:5px 5px 0 rgba(23,19,14,.16)}
+.scroll-cue{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);z-index:6;
+  display:flex;flex-direction:column;align-items:center;gap:7px;font-family:'DM Mono',monospace;font-size:.66rem;letter-spacing:.18em;color:rgba(23,19,14,.6)}
+.scroll-cue .bar{width:1px;height:34px;background:rgba(23,19,14,.4);animation:cue 1.8s var(--easing) infinite}
+@keyframes cue{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* --- cortina: conteúdo sobe por cima do hero --- */
+.stage{position:relative;z-index:20;background:var(--cream);border-radius:44px 44px 0 0;
+  box-shadow:0 -30px 60px rgba(23,19,14,.16);overflow:clip}
+
+/* --- marquee --- */
+.marquee{background:var(--ink);color:var(--cream);padding:18px 0;overflow:hidden;border-radius:42px 42px 0 0;white-space:nowrap;border-bottom:2px solid var(--ink)}
+.marquee .track{display:inline-flex;gap:34px;will-change:transform}
+.marquee b{font-weight:900;font-size:clamp(1.1rem,2.4vw,2rem);letter-spacing:-.02em;text-transform:uppercase;display:inline-flex;align-items:center;gap:34px}
+.marquee b::after{content:"✳";color:var(--yellow);font-size:.7em}
+.marquee--yellow{background:var(--yellow);color:var(--ink)}
+.marquee--yellow b::after{color:var(--ink)}
+
+/* --- seções --- */
+section{padding:clamp(70px,10vw,140px) var(--pad);position:relative}
+.sec-head{display:grid;grid-template-columns:1fr;gap:22px;margin-bottom:clamp(40px,6vw,80px)}
+@media(min-width:900px){.sec-head{grid-template-columns:1.15fr .85fr;align-items:end}}
+
+/* diagnóstico */
+.diag{background:var(--cream)}
+.stats{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));margin-top:20px}
+.stat{background:#fff;border:2px solid var(--ink);border-radius:var(--r);padding:26px 24px 22px;
+  box-shadow:6px 6px 0 var(--ink);transition:transform .5s var(--easing),box-shadow .5s var(--easing)}
+.stat:hover{transform:translate(-3px,-3px);box-shadow:11px 11px 0 var(--ink)}
+.stat .n{font-weight:900;font-size:clamp(3rem,7vw,5.2rem);line-height:.85;letter-spacing:-.045em}
+.stat .n em{font-style:normal;font-size:.4em;vertical-align:super;margin-left:2px}
+.stat p{margin-top:12px;font-size:.95rem;font-weight:500;color:var(--ink-soft)}
+.diag-art{position:absolute;right:var(--pad);bottom:9%;width:clamp(110px,13vw,200px);z-index:2;pointer-events:none;transform:rotate(-5deg)}
+.fine{font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(23,19,14,.45);margin-top:22px}
+
+/* aulas — coverflow 3D */
+.aulas{background:var(--dark);color:var(--cream)}
+.aulas h2{color:var(--cream)}
+.cf{position:relative;--cf-card:clamp(200px,26vw,340px)}
+.cf-frame{
+  overflow:hidden;padding:46px 0;outline:none;cursor:grab;
+  touch-action:pan-y;                       /* arrasto horizontal é nosso; a página mantém o scroll vertical */
+  perspective:calc(var(--cf-card) * 3);
+}
+.cf-frame:active{cursor:grabbing}
+.cf-frame:focus-visible{outline:2px solid var(--yellow);outline-offset:6px;border-radius:20px}
+/* sem JS o palco é uma grade comum — nada some */
+.cf-stage{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.js .cf-stage{display:block;position:relative;height:var(--cf-card);transform-style:preserve-3d;user-select:none}
+.cf-card{
+  aspect-ratio:1;overflow:hidden;border-radius:24px;background:#241f19;
+  box-shadow:0 26px 50px rgba(0,0,0,.5);
+}
+.js .cf-card{position:absolute;left:50%;top:0;width:var(--cf-card);will-change:transform,opacity}
+.cf-card img{width:100%;height:100%;object-fit:cover;-webkit-user-drag:none;user-select:none}
+.cf-nav{
+  position:absolute;top:50%;z-index:200;
+  width:46px;height:46px;border-radius:13px;display:grid;place-items:center;
+  background:var(--cream);color:var(--ink);font-size:1.4rem;line-height:1;
+  box-shadow:0 5px 0 0 #000;
+  transform:translateY(-50%);
+  transition:transform .3s var(--spring),background .25s ease,box-shadow .12s ease;
+}
+.cf-nav:hover{background:var(--yellow);transform:translateY(calc(-50% - 2px));box-shadow:0 7px 0 0 #000}
+.cf-nav:active{transform:translateY(calc(-50% + 4px));box-shadow:0 1px 0 0 #000}
+.cf-nav.prev{left:clamp(2px,2vw,26px)}
+.cf-nav.next{right:clamp(2px,2vw,26px)}
+.cf-caption{text-align:center;margin-top:6px;min-height:132px}
+.cf-caption .num{font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:.18em;color:var(--yellow)}
+.cf-caption h3{font-weight:900;font-size:clamp(1.5rem,3.4vw,2.6rem);text-transform:uppercase;letter-spacing:-.03em;margin-top:8px}
+.cf-caption p{margin:10px auto 0;max-width:46ch;color:rgba(251,242,222,.66);font-size:.98rem}
+.cf-caption dl{display:flex;justify-content:center;gap:26px;margin-top:16px;
+  font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase}
+.cf-caption dl div{display:flex;gap:8px}
+.cf-caption dt{color:rgba(251,242,222,.45)}
+.cf-fade{animation:cfIn .45s var(--easing)}
+@keyframes cfIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.cf-dots{display:flex;justify-content:center;gap:9px;margin-top:26px}
+.cf-dots button{width:9px;height:9px;border-radius:50%;background:var(--cream);opacity:.28;transition:opacity .3s,transform .3s}
+.cf-dots button[aria-current="true"]{opacity:1;transform:scale(1.25);background:var(--yellow)}
+
+/* método — sticky steps */
+.metodo{background:var(--yellow);overflow:clip}
+.metodo-grid{display:grid;gap:40px}
+@media(min-width:940px){.metodo-grid{grid-template-columns:.9fr 1.1fr;gap:70px;align-items:start}}
+.metodo-sticky{position:sticky;top:16vh}
+.metodo-stage{position:relative;aspect-ratio:1;display:grid;place-items:center}
+.metodo-stage .ring{position:absolute;inset:8%;border:2px dashed rgba(23,19,14,.28);border-radius:50%;animation:spin 26s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.metodo-stage img{position:absolute;width:74%;opacity:0;transform:scale(.86) translateY(16px);
+  transition:opacity .6s var(--easing),transform .6s var(--easing);filter:drop-shadow(0 26px 34px rgba(139,94,0,.25))}
+.metodo-stage img.on{opacity:1;transform:none}
+.step{border-top:2px solid var(--ink);padding:26px 0;display:grid;grid-template-columns:auto 1fr;gap:22px;opacity:.5;transition:opacity .5s ease,transform .5s var(--easing)}
+.step.on{opacity:1;transform:translateX(6px)}
+.step .idx{font-family:'DM Mono',monospace;font-size:.76rem;letter-spacing:.14em;padding-top:6px}
+.step h3{font-weight:900;font-size:clamp(1.5rem,3.2vw,2.4rem);text-transform:uppercase;letter-spacing:-.03em;line-height:.95}
+.step p{margin-top:8px;font-size:.98rem;color:var(--ink-soft);max-width:44ch}
+.step .timer{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;margin-top:12px;
+  display:inline-block;background:var(--ink);color:var(--cream);border-radius:100px;padding:5px 12px}
+
+/* antes e depois */
+.ba{background:var(--cream);text-align:center}
+.ba-grid{display:grid;gap:26px;grid-template-columns:1fr;align-items:center}
+@media(min-width:820px){.ba-grid{grid-template-columns:1fr auto 1fr}}
+.ba-card{border:2px solid var(--ink);border-radius:var(--r);padding:34px 26px;background:#fff}
+.ba-card.bad{background:#EFE9DC}
+.ba-card img{width:min(240px,60%);margin:0 auto 18px}
+.ba-card h3{font-weight:900;text-transform:uppercase;font-size:1.35rem;letter-spacing:-.02em}
+.ba-card p{color:var(--ink-soft);font-size:.95rem;margin-top:8px}
+.arc{width:190px;height:190px;margin:0 auto;position:relative;display:grid;place-items:center}
+.arc svg{position:absolute;inset:0;width:100%;height:100%;animation:spin 18s linear infinite}
+.arc .core{width:74px;height:74px;border-radius:50%;background:var(--ink);color:var(--yellow);display:grid;place-items:center;font-weight:900;font-size:1.5rem}
+
+/* depoimentos */
+.depo{background:var(--amber);color:var(--cream);overflow:clip}
+.depo-grid{display:grid;gap:40px}
+@media(min-width:960px){.depo-grid{grid-template-columns:.85fr 1.15fr;gap:60px;align-items:start}}
+.depo-head{position:sticky;top:20vh}
+.depo-head h2{color:var(--cream)}
+.depo-head p{margin-top:18px;max-width:34ch;font-weight:500;opacity:.9}
+.depo-list{display:flex;flex-direction:column;gap:clamp(24px,6vw,70px)}
+.quote{background:#fff;color:var(--ink);border-radius:26px;padding:32px 30px;max-width:520px;
+  box-shadow:0 24px 44px rgba(90,58,0,.18)}
+.quote:nth-child(even){margin-left:auto}
+.quote p{font-size:clamp(1.02rem,1.5vw,1.22rem);font-weight:500;line-height:1.42}
+.quote .who{display:flex;align-items:center;gap:12px;margin-top:22px}
+.quote .av{width:44px;height:44px;border-radius:50%;background:var(--yellow);display:grid;place-items:center;font-weight:900}
+.quote .who b{display:block;font-size:.95rem}
+.quote .who span{font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;opacity:.55}
+
+/* oferta */
+.oferta{background:var(--dark);color:var(--cream)}
+.offer-card{background:var(--cream);color:var(--ink);border-radius:34px;overflow:hidden;
+  display:grid;gap:0;grid-template-columns:1fr;box-shadow:0 40px 80px rgba(0,0,0,.45)}
+@media(min-width:940px){.offer-card{grid-template-columns:1.05fr .95fr}}
+.offer-media{background:var(--yellow);padding:34px;display:grid;place-items:center;position:relative}
+.offer-media img{border-radius:20px;box-shadow:0 18px 40px rgba(120,80,0,.22)}
+.offer-media .badge{position:absolute;left:24px;top:24px;background:var(--ink);color:var(--cream);
+  border-radius:100px;padding:8px 15px;font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase}
+.offer-body{padding:clamp(28px,3.4vw,46px)}
+.offer-body h3{font-weight:900;font-size:clamp(1.8rem,3.4vw,2.8rem);text-transform:uppercase;letter-spacing:-.035em;line-height:.92}
+.stack{margin:24px 0;border-top:1.5px solid rgba(23,19,14,.16)}
+.stack li{list-style:none;display:flex;justify-content:space-between;gap:16px;padding:12px 0;
+  border-bottom:1.5px solid rgba(23,19,14,.16);font-size:.96rem;font-weight:500}
+.stack li span{font-family:'DM Mono',monospace;font-size:.8rem;opacity:.6}
+.stack li s{opacity:.5}
+.price{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:8px}
+.price .old{font-family:'DM Mono',monospace;font-size:.9rem;opacity:.5;text-decoration:line-through}
+.price .new{font-weight:900;font-size:clamp(2.6rem,6vw,4rem);letter-spacing:-.04em;line-height:.9}
+.price .cond{font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;opacity:.6}
+.guarantee{display:flex;gap:14px;align-items:flex-start;margin-top:22px;background:#fff;border:2px dashed rgba(23,19,14,.28);border-radius:18px;padding:16px 18px}
+.guarantee .seal{flex:0 0 auto;width:44px;height:44px;border-radius:50%;background:var(--ink);color:var(--yellow);display:grid;place-items:center;font-weight:900;font-size:.8rem;text-align:center;line-height:1}
+.guarantee p{font-size:.9rem;color:var(--ink-soft)}
+
+/* faq */
+.faq{background:var(--foam)}
+.acc{border-top:2px solid var(--ink);max-width:900px}
+.faq-art{position:absolute;right:var(--pad);bottom:12%;width:clamp(150px,17vw,270px);pointer-events:none;transform:rotate(4deg)}
+@media(max-width:900px){.faq-art{display:none}}
+.acc details{border-bottom:2px solid var(--ink)}
+.acc summary{list-style:none;cursor:pointer;padding:22px 0;display:flex;justify-content:space-between;gap:20px;align-items:center;
+  font-weight:800;font-size:clamp(1.05rem,2vw,1.4rem);letter-spacing:-.02em}
+.acc summary::-webkit-details-marker{display:none}
+.acc summary i{flex:0 0 auto;width:32px;height:32px;border-radius:50%;border:2px solid var(--ink);display:grid;place-items:center;font-style:normal;transition:transform .45s var(--easing)}
+.acc details[open] summary i{transform:rotate(45deg);background:var(--ink);color:var(--foam)}
+.acc .body{padding:0 0 24px;max-width:62ch;color:var(--ink-soft);font-size:1rem}
+
+/* cta final + footer */
+.final{background:var(--yellow);text-align:center;overflow:clip;position:relative}
+.final h2{margin:0 auto 26px}
+.final .mini{width:clamp(150px,18vw,240px);margin:0 auto 20px}
+footer{background:var(--ink);color:var(--cream);padding:clamp(50px,7vw,90px) var(--pad) 34px;position:relative;overflow:hidden}
+.foot-top{display:flex;justify-content:space-between;gap:26px;flex-wrap:wrap;align-items:flex-end;margin-bottom:clamp(40px,7vw,80px)}
+.foot-links{display:flex;gap:22px;flex-wrap:wrap;font-family:'DM Mono',monospace;font-size:.74rem;letter-spacing:.12em;text-transform:uppercase}
+.foot-links a{opacity:.7;transition:opacity .3s}
+.foot-links a:hover{opacity:1;color:var(--yellow)}
+.foot-word{font-weight:900;font-size:clamp(4rem,20vw,20rem);line-height:.76;letter-spacing:-.05em;text-transform:uppercase;
+  color:transparent;-webkit-text-stroke:2px rgba(251,242,222,.55);transition:color .6s var(--easing)}
+.foot-word:hover{color:var(--yellow);-webkit-text-stroke-color:var(--yellow)}
+.foot-bottom{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
+  font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;opacity:.6;border-top:1px solid rgba(251,242,222,.18);padding-top:20px}
+.disclaimer{background:#0D0B09;color:rgba(251,242,222,.72);text-align:center;padding:16px var(--pad);
+  font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase}
+
+/* barra de progresso do scroll */
+.progress{position:fixed;left:0;top:0;height:3px;background:var(--ink);width:0;z-index:1000}
+
+@media(max-width:820px){
+  h1.display{font-size:clamp(3.2rem,15.5vw,6rem)}
+  h2.display{font-size:clamp(2rem,8.6vw,3.4rem)}
+  .hero-title{transform:none;padding-top:8vh}
+  .hero-title .kicker{font-size:1.5rem;margin-bottom:-.12em}
+  .hero-blob{width:min(82vw,420px);top:44%}
+  .hero-sub{max-width:34ch;font-size:.95rem}
+  .hero-actions{flex-direction:column;align-items:center}
+  .hero-actions .btn{width:min(320px,86vw);justify-content:space-between}
+  .hero-mascote{width:150px;right:-6px;bottom:2vh}
+  .bubble{display:none}
+  .sticker{font-size:.62rem;padding:7px 11px}
+  .sticker.mob-off{display:none}
+  .hud.tl,.hud.tr{display:none}
+  .nav{top:12px;padding:0 12px}
+  .logo{font-size:.72rem;padding:6px 8px}
+  .nav-pill{padding:10px 14px;gap:10px}
+  .nav-pill a{font-size:.76rem}
+  .nav-pill .status{display:none}
+  .nav-cta span{display:none}
+  .nav-cta{padding:6px}
+  .stage{border-radius:28px 28px 0 0}
+  .marquee{border-radius:26px 26px 0 0}
+  .cf{--cf-card:clamp(180px,52vw,240px)}
+  .cf-nav{display:none}   /* no toque, arrasto e dots bastam */
+  .cf-caption{min-height:170px}
+  .cf-caption dl{gap:16px}
+  .metodo-sticky{position:static}
+  .metodo-stage{max-width:300px;margin:0 auto}
+  .quote:nth-child(even){margin-left:0}
+  .offer-media{padding:20px}
+  .foot-word{-webkit-text-stroke-width:1.4px}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition-duration:.01ms!important}
+  [data-reveal]{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div class="progress" id="progress"></div>
+
+<!-- ===================== NAV ===================== -->
+<nav class="nav" id="nav">
+  <a href="#top" class="logo">ESPUMA<sup>™</sup><br>ESTÚDIO DE PIA</a>
+  <div class="nav-pill">
+    <a href="#aulas">AULAS</a>
+    <span class="sep"></span>
+    <a href="#metodo">MÉTODO</a>
+    <span class="sep"></span>
+    <span class="status"><span class="dot" style="display:inline-block;margin-right:6px"></span>turma 04 · vagas abertas</span>
+  </div>
+  <a href="#oferta" class="nav-cta"><span>QUERO A VAGA</span><i>→</i></a>
+</nav>
+
+<!-- ===================== HERO ===================== -->
+<div class="hero-wrap" id="top">
+  <header class="hero" id="hero">
+    <div class="hero-grid" id="heroGrid"></div>
+
+    <div class="hero-inner">
+      <img class="hero-blob" id="heroBlob" src="img/espuma-blob.webp" alt="Espuma de sabão em 3D">
+
+      <div class="hero-title" id="heroTitle">
+        <span class="script kicker">o curso oficial de</span>
+        <h1 class="display" data-split>lavar<br>as <span class="out">mãos</span></h1>
+      <div class="hero-sub">
+        <p><b>O método dos 20 segundos.</b> Sete aulas curtas para transformar uma passada de água em higiene de verdade. Uma pia, um sabão, nenhuma desculpa.</p>
+      </div>
+      <div class="hero-actions">
+        <a href="#oferta" class="btn" data-magnetic><span>COMEÇAR POR R$ 47</span><i class="arrow">→</i></a>
+        <a href="#metodo" class="btn btn--ghost" data-magnetic><span>ver o método</span><i class="arrow">↓</i></a>
+      </div>
+      </div>
+
+      <img class="hero-mascote" id="heroMascote" src="img/mascote-hero.webp" alt="Mascote da Espuma acenando">
+
+      <span class="bubble" data-float="0.05" style="width:78px;height:78px;left:9%;top:24%"></span>
+      <span class="bubble" data-float="0.09" style="width:38px;height:38px;left:20%;top:58%"></span>
+      <span class="bubble" data-float="0.07" style="width:54px;height:54px;right:16%;top:20%"></span>
+      <span class="bubble" data-float="0.12" style="width:26px;height:26px;right:29%;top:63%"></span>
+
+      <span class="sticker mob-off" data-float="0.16" style="left:5%;top:38%;transform:rotate(-8deg)">20 segundos</span>
+      <span class="sticker" data-float="0.13" style="right:7%;top:25%;transform:rotate(7deg)">polegar incluído</span>
+      <span class="sticker mob-off" data-float="0.1" style="left:9%;top:76%;transform:rotate(-4deg)">7 aulas curtas</span>
+
+      <div class="hud tl">ESPUMA © 2026<br>ESTÚDIO DE PIA</div>
+      <div class="hud tr">INFOPRODUTO FICTÍCIO<br>DEMONSTRAÇÃO DE AULA</div>
+      <div class="hud bl" id="coords">0000 X · 0000 Y</div>
+      <div class="hud br">MÉTODO V.4.1</div>
+      <div class="scroll-cue"><span>ROLE</span><span class="bar"></span></div>
+    </div>
+  </header>
+</div>
+
+<main class="stage">
+
+<!-- ===================== MARQUEE ===================== -->
+<div class="marquee" id="marquee1">
+  <div class="track"><b>20 segundos</b><b>espuma de verdade</b><b>polegar incluído</b><b>enxágue honesto</b><b>7 aulas</b><b>20 segundos</b><b>espuma de verdade</b><b>polegar incluído</b><b>enxágue honesto</b><b>7 aulas</b></div>
+</div>
+
+<!-- ===================== DIAGNÓSTICO ===================== -->
+<section class="diag" id="diagnostico">
+  <img class="diag-art" src="img/mascote-germe.webp" alt="Mascote preocupado com germes" data-reveal>
+  <div class="sec-head">
+    <div>
+      <span class="eyebrow" data-reveal>O DIAGNÓSTICO</span>
+      <h2 class="display" data-split style="margin-top:18px">você lava a mão<br>em 6 segundos</h2>
+    </div>
+    <p class="lead" data-reveal style="--i:2">A pia não mente — a pressa mente por você. Molha, passa sabão no meio da palma, sai correndo. O resultado é uma mão molhada, não uma mão limpa. E a diferença entre as duas coisas cabe em 20 segundos.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat" data-reveal style="--i:0"><div class="n"><span data-count="6">0</span><em>s</em></div><p>é o tempo médio que uma pessoa passa na pia — um terço do necessário.</p></div>
+    <div class="stat" data-reveal style="--i:1"><div class="n"><span data-count="78">0</span><em>%</em></div><p>esquecem completamente o polegar, a área que mais toca em tudo.</p></div>
+    <div class="stat" data-reveal style="--i:2"><div class="n"><span data-count="4">0</span><em>×</em></div><p>mais bactérias na mão seca na calça do que na mão seca direito.</p></div>
+  </div>
+  <p class="fine" data-reveal>* números fictícios — este é um produto de demonstração criado para uma aula de landing page.</p>
+</section>
+
+<!-- ===================== AULAS (COVERFLOW) ===================== -->
+<section class="aulas" id="aulas">
+  <div class="sec-head">
+    <div>
+      <span class="eyebrow" style="color:var(--yellow)" data-reveal>O CONTEÚDO</span>
+      <h2 class="display" data-split style="margin-top:16px">as 7 aulas</h2>
+    </div>
+    <p class="lead" data-reveal style="color:rgba(251,242,222,.7);max-width:34ch">Cada aula tem uma tarefa só, filmada em cima de uma pia de verdade. Nada de teoria: você assiste, levanta e lava.</p>
+  </div>
+
+  <div class="cf" id="cf" role="region" aria-roledescription="carrossel" aria-label="Aulas do curso">
+    <div class="cf-frame" id="cfFrame" tabindex="0" aria-label="Arraste ou use as setas do teclado">
+      <div class="cf-stage" id="cfStage">
+        <figure class="cf-card" data-num="AULA 01" data-titulo="a pia" data-desc="Reconhecendo o terreno: torneira, sabão, apoio e o que você toca antes e depois de lavar." data-dur="04 min" data-tipo="fundamento">
+          <img src="img/aula-01-pia.webp" alt="Capa da AULA 01 — a pia" draggable="false">
+        </figure>
+        <figure class="cf-card" data-num="AULA 02" data-titulo="a água" data-desc="Morna, nunca fervendo. Por que água quente demais atrapalha e ainda estraga a sua pele." data-dur="05 min" data-tipo="fundamento">
+          <img src="img/aula-02-agua.webp" alt="Capa da AULA 02 — a água" draggable="false">
+        </figure>
+        <figure class="cf-card" data-num="AULA 03" data-titulo="o sabão" data-desc="A quantidade que ninguém te ensinou — e o motivo de mais sabão não significar mais limpeza." data-dur="06 min" data-tipo="técnica">
+          <img src="img/aula-03-sabao.webp" alt="Capa da AULA 03 — o sabão" draggable="false">
+        </figure>
+        <figure class="cf-card" data-num="AULA 04" data-titulo="a espuma" data-desc="Os 20 segundos sagrados. O movimento completo, cronometrado, sem pular etapa nenhuma." data-dur="08 min" data-tipo="núcleo">
+          <img src="img/aula-04-espuma.webp" alt="Capa da AULA 04 — a espuma" draggable="false">
+        </figure>
+        <figure class="cf-card" data-num="AULA 05" data-titulo="o polegar" data-desc="O dedo que todo mundo esquece e que encosta em tudo: maçaneta, celular, rosto." data-dur="05 min" data-tipo="detalhe">
+          <img src="img/aula-05-polegar.webp" alt="Capa da AULA 05 — o polegar" draggable="false">
+        </figure>
+        <figure class="cf-card" data-num="AULA 06" data-titulo="o enxágue" data-desc="Saindo limpo de verdade: direção da água, tempo e o erro clássico de fechar a torneira." data-dur="04 min" data-tipo="detalhe">
+          <img src="img/aula-06-enxague.webp" alt="Capa da AULA 06 — o enxágue" draggable="false">
+        </figure>
+        <figure class="cf-card" data-num="AULA 07" data-titulo="a secagem" data-desc="Onde quase todo mundo joga fora o trabalho inteiro. Papel, pano, ar — e a calça, jamais." data-dur="07 min" data-tipo="final">
+          <img src="img/aula-07-secagem.webp" alt="Capa da AULA 07 — a secagem" draggable="false">
+        </figure>
+        <figure class="cf-card" data-num="EXTRA" data-titulo="a pia dos outros" data-desc="Banheiro público, cozinha de escritório, casa de sogra: como aplicar o método em terreno hostil." data-dur="11 min" data-tipo="bônus">
+          <img src="img/aula-08-bonus.webp" alt="Capa da EXTRA — a pia dos outros" draggable="false">
+        </figure>
+      </div>
+    </div>
+    <button class="cf-nav prev" type="button" id="cfPrev" aria-label="Aula anterior">‹</button>
+    <button class="cf-nav next" type="button" id="cfNext" aria-label="Próxima aula">›</button>
+  </div>
+
+  <div class="cf-caption" id="cfCaption" aria-live="polite"></div>
+  <div class="cf-dots" id="cfDots"></div>
+</section>
+
+<!-- ===================== MÉTODO ===================== -->
+<section class="metodo" id="metodo">
+  <div class="sec-head">
+    <div>
+      <span class="eyebrow" data-reveal>O MÉTODO</span>
+      <h2 class="display" data-split style="margin-top:18px">seis movimentos,<br>vinte segundos</h2>
+    </div>
+    <p class="lead" data-reveal>Não é força, é ordem. Cada movimento cobre uma região que o anterior deixou de fora — e a conta fecha em vinte segundos exatos.</p>
+  </div>
+
+  <div class="metodo-grid">
+    <div class="metodo-sticky">
+      <div class="metodo-stage">
+        <span class="ring"></span>
+        <img data-step-img="0" class="on" src="img/mascote-espuma.webp" alt="Mascote fazendo espuma">
+        <img data-step-img="1" src="img/mascote-sabao.webp" alt="Mascote com sabão">
+        <img data-step-img="2" src="img/mascote-timer.webp" alt="Mascote com cronômetro">
+        <img data-step-img="3" src="img/mascote-limpo.webp" alt="Mascote limpo comemorando">
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="step" data-step="0"><div class="idx">01</div><div><h3>palma com palma</h3><p>Sabão na mão molhada e as palmas se encontram. É aqui que a espuma nasce — sem espuma, o resto não acontece.</p><span class="timer">03 s</span></div></div>
+      <div class="step" data-step="0"><div class="idx">02</div><div><h3>dorso da mão</h3><p>Palma direita sobre o dorso esquerdo, dedos entrelaçados. Depois inverte. Ninguém faz e todo mundo devia.</p><span class="timer">04 s</span></div></div>
+      <div class="step" data-step="1"><div class="idx">03</div><div><h3>entre os dedos</h3><p>Palma com palma, dedos cruzados. O vão entre os dedos é escuro, úmido e esquecido — o combo perfeito.</p><span class="timer">03 s</span></div></div>
+      <div class="step" data-step="2"><div class="idx">04</div><div><h3>o polegar</h3><p>Envolve o polegar com a mão oposta e gira. Este é o movimento que separa quem fez o curso de quem não fez.</p><span class="timer">04 s</span></div></div>
+      <div class="step" data-step="2"><div class="idx">05</div><div><h3>unhas na palma</h3><p>Ponta dos dedos girando contra a palma. Cobre unha, cutícula e a lateral do dedo de uma vez só.</p><span class="timer">03 s</span></div></div>
+      <div class="step" data-step="3"><div class="idx">06</div><div><h3>punho e secagem</h3><p>Sobe até o punho, enxágua de cima para baixo e seca em papel ou pano limpo. Nunca na roupa.</p><span class="timer">03 s</span></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="marquee marquee--yellow" id="marquee2">
+  <div class="track"><b>mão limpa</b><b>pia feliz</b><b>método espuma</b><b>mão limpa</b><b>pia feliz</b><b>método espuma</b><b>mão limpa</b><b>pia feliz</b><b>método espuma</b></div>
+</div>
+
+<!-- ===================== ANTES / DEPOIS ===================== -->
+<section class="ba">
+  <span class="eyebrow" data-reveal>A DIFERENÇA</span>
+  <h2 class="display" data-split style="margin:18px auto 50px;max-width:16ch">molhada não é<br>a mesma coisa<br>que limpa</h2>
+  <div class="ba-grid">
+    <div class="ba-card bad" data-reveal><img src="img/mascote-germe.webp" alt="Antes"><h3>antes do curso</h3><p>Seis segundos, sabão só na palma, enxágue apressado e a secagem na calça jeans.</p></div>
+    <div class="arc" data-reveal style="--i:1">
+      <svg viewBox="0 0 200 200"><defs><path id="circ" d="M100,100 m-74,0 a74,74 0 1,1 148,0 a74,74 0 1,1 -148,0"></path></defs>
+        <text font-family="DM Mono, monospace" font-size="14" letter-spacing="4" fill="#17130E"><textPath href="#circ">MÃOS LIMPAS • ESPUMA • 20 SEGUNDOS • MÃOS LIMPAS • ESPUMA • </textPath></text></svg>
+      <div class="core">VS</div>
+    </div>
+    <div class="ba-card" data-reveal style="--i:2"><img src="img/mascote-limpo.webp" alt="Depois"><h3>depois do curso</h3><p>Vinte segundos cronometrados, seis movimentos na ordem certa e uma secagem que não desfaz o trabalho.</p></div>
+  </div>
+</section>
+
+<!-- ===================== DEPOIMENTOS ===================== -->
+<section class="depo">
+  <div class="depo-grid">
+    <div class="depo-head">
+      <span class="eyebrow">PERSONAGENS FICTÍCIOS</span>
+      <h2 class="display" data-split style="margin-top:16px">não acredite<br>na gente</h2>
+      <p>Estes depoimentos foram inventados para a demonstração — como todo o resto desta página.</p>
+    </div>
+    <div class="depo-list">
+      <blockquote class="quote" data-reveal><p>“Eu achava que lavava a mão. Descobri que eu só passava água. São coisas completamente diferentes.”</p><div class="who"><span class="av">R</span><div><b>Rita M.</b><span>aluna da turma 02</span></div></div></blockquote>
+      <blockquote class="quote" data-reveal><p>“A aula do polegar mudou o meu dia. Trabalho com comida há 14 anos e nunca ninguém tinha me falado disso.”</p><div class="who"><span class="av">J</span><div><b>Jorge A.</b><span>aluno da turma 01</span></div></div></blockquote>
+      <blockquote class="quote" data-reveal><p>“Meu filho de 6 anos agora cronometra a família inteira na pia. É caos, mas é caos higiênico.”</p><div class="who"><span class="av">D</span><div><b>Denise T.</b><span>aluna da turma 03</span></div></div></blockquote>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== OFERTA ===================== -->
+<section class="oferta" id="oferta">
+  <div class="sec-head">
+    <div>
+      <span class="eyebrow" style="color:var(--yellow)" data-reveal>A OFERTA</span>
+      <h2 class="display" data-split style="margin-top:16px">entra na turma 04</h2>
+    </div>
+    <p class="lead" data-reveal style="color:rgba(251,242,222,.7)">Acesso vitalício às 7 aulas, ao bônus e ao grupo. Abre uma turma por mês porque as lives de pia são ao vivo.</p>
+  </div>
+
+  <div class="offer-card" data-reveal>
+    <div class="offer-media">
+      <span class="badge">KIT DO ALUNO</span>
+      <img src="img/kit-produto.webp" alt="Kit fictício do curso Espuma">
+    </div>
+    <div class="offer-body">
+      <h3>espuma —<br>curso completo</h3>
+      <ul class="stack">
+        <li><span>7 aulas em vídeo, uma tarefa cada</span><s>R$ 197</s></li>
+        <li><span>Aula bônus: a pia dos outros</span><s>R$ 67</s></li>
+        <li><span>Cronômetro de bolso dos 20 segundos</span><s>R$ 47</s></li>
+        <li><span>Cartaz da pia para imprimir</span><s>R$ 29</s></li>
+        <li><span>Grupo dos Lavados no WhatsApp</span><s>R$ 97</s></li>
+      </ul>
+      <div class="price">
+        <span class="old">R$ 437</span>
+        <span class="new">R$ 47</span>
+        <span class="cond">à vista ou 3× de R$ 16,90</span>
+      </div>
+      <a href="#" class="btn btn--big btn--yellow" data-magnetic style="margin-top:14px"><span>QUERO LAVAR DIREITO</span><i class="arrow">→</i></a>
+      <div class="guarantee">
+        <span class="seal">7<br>DIAS</span>
+        <p><b>Garantia da espuma.</b> Assiste tudo, testa na sua pia e, se em 7 dias você achar que continuava lavando certo antes, devolvemos o valor inteiro. Você fica com o cartaz.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FAQ ===================== -->
+<section class="faq">
+  <img class="faq-art" src="img/mascote-sabao.webp" alt="Mascote com um sabonete" data-reveal>
+  <div class="sec-head">
+    <div><span class="eyebrow" data-reveal>DÚVIDAS</span><h2 class="display" data-split style="margin-top:16px">perguntas de pia</h2></div>
+  </div>
+  <div class="acc">
+    <details data-reveal><summary>Preciso de uma pia própria?<i>+</i></summary><div class="body">Ajuda, mas não é obrigatório. O método funciona em qualquer pia — a aula bônus é dedicada justamente a banheiro público, cozinha de escritório e casa dos outros.</div></details>
+    <details data-reveal><summary>Serve para quem já lava a mão?<i>+</i></summary><div class="body">Principalmente. Quem nunca lavou aprende do zero em uma tarde; quem já lava há trinta anos costuma descobrir que pula três dos seis movimentos.</div></details>
+    <details data-reveal><summary>Álcool em gel não resolve?<i>+</i></summary><div class="body">Álcool é o plano B, para quando não há pia por perto. Este curso é sobre o plano A, que continua sendo água e sabão.</div></details>
+    <details data-reveal><summary>Tem certificado?<i>+</i></summary><div class="body">Tem, e é tão fictício quanto o resto: um PDF em amarelo e creme com o seu nome e o carimbo do Estúdio de Pia.</div></details>
+    <details data-reveal open><summary>Isso aqui é um curso de verdade?<i>+</i></summary><div class="body"><b>Não.</b> A ESPUMA™ é um produto 100% fictício, criado como demonstração de uma aula sobre construção de landing pages. Nada aqui está à venda, os números são inventados e os depoimentos são personagens.</div></details>
+  </div>
+</section>
+
+<!-- ===================== CTA FINAL ===================== -->
+<section class="final">
+  <img class="mini" src="img/mascote-limpo.webp" alt="Mascote comemorando" data-reveal>
+  <span class="eyebrow" data-reveal>ÚLTIMA CHAMADA</span>
+  <h2 class="display" data-split style="margin:18px auto 26px;max-width:14ch">vinte segundos<br>separam você<br>de uma mão limpa</h2>
+  <a href="#oferta" class="btn btn--big" data-magnetic><span>ENTRAR NA TURMA 04 — R$ 47</span><i class="arrow">→</i></a>
+  <p class="fine" data-reveal>produto fictício · demonstração de aula · nenhuma mão foi prejudicada</p>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="foot-top">
+    <div>
+      <div class="logo" style="display:inline-block">ESPUMA<sup>™</sup><br>ESTÚDIO DE PIA</div>
+      <p style="margin-top:16px;max-width:32ch;opacity:.65;font-size:.95rem">O único estúdio dedicado à coisa mais repetida e menos ensinada do seu dia.</p>
+    </div>
+    <div class="foot-links">
+      <a href="#aulas">AULAS</a><a href="#metodo">MÉTODO</a><a href="#oferta">OFERTA</a><a href="#top">TOPO</a>
+    </div>
+  </div>
+  <div class="foot-word">ESPUMA</div>
+  <div class="foot-bottom">
+    <span>ESPUMA © 2026</span>
+    <span id="clock">--:--:--</span>
+    <span>FEITO COMO DEMO DE AULA</span>
+  </div>
+</footer>
+<div class="disclaimer">⚠︎ infoproduto 100% fictício — criado apenas como exemplo de landing page. nada aqui está à venda.</div>
+
+</main>
+
+<script>
+/* ============================================================
+   ESPUMA™ — motion
+   tudo em vanilla: sem libs, sem dependência externa
+   ============================================================ */
+const lerp = (a,b,t)=>a+(b-a)*t;
+const absTop = el => el.getBoundingClientRect().top + scrollY;   // .stage é relative: offsetTop mente
+const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+document.documentElement.classList.add('js');   // sem JS, nada fica escondido
+
+/* ---------- 1. grid do hero (linhas + cruzinhas, ref. haoqi) ---------- */
+(function grid(){
+  const g = document.getElementById('heroGrid');
+  const cols = 5, rows = 3;
+  for(let i=1;i<cols;i++){
+    const l=document.createElement('span');
+    l.className='l'; l.style.cssText=`left:${(100/cols)*i}%;top:0;width:1px;height:100%`;
+    g.appendChild(l);
+  }
+  for(let i=1;i<rows;i++){
+    const l=document.createElement('span');
+    l.className='l'; l.style.cssText=`top:${(100/rows)*i}%;left:0;height:1px;width:100%`;
+    g.appendChild(l);
+  }
+  for(let x=1;x<cols;x++) for(let y=1;y<rows;y++){
+    const p=document.createElement('span');
+    p.className='plus'; p.textContent='+';
+    p.style.cssText=`left:calc(${(100/cols)*x}% - 5px);top:calc(${(100/rows)*y}% - 6px)`;
+    g.appendChild(p);
+  }
+})();
+
+/* ---------- 2. split de palavras + reveal ---------- */
+document.querySelectorAll('[data-split]').forEach(el=>{
+  const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  const nodes = []; while(walk.nextNode()) nodes.push(walk.currentNode);
+  nodes.forEach(n=>{
+    const frag = document.createDocumentFragment();
+    n.nodeValue.split(/(\s+)/).forEach(part=>{
+      if(!part.trim()){ frag.appendChild(document.createTextNode(part)); return; }
+      const s = document.createElement('span'); s.className = 'word';
+      const i = document.createElement('i'); i.textContent = part;
+      s.appendChild(i); frag.appendChild(s);
+    });
+    n.parentNode.replaceChild(frag, n);
+  });
+  el.querySelectorAll('.word i').forEach((w,i)=>w.style.setProperty('--w',i));
+});
+
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    // revela ao entrar — ou já revelado se a seção ficou acima da viewport (reload no meio da página)
+    if(!e.isIntersecting && e.boundingClientRect.top > 0) return;
+    revela(e.target);
+  });
+},{threshold:.18,rootMargin:'0px 0px -8% 0px'});
+document.querySelectorAll('[data-reveal],[data-split]').forEach(el=>io.observe(el));
+
+/* rede de segurança: o observer é o caminho normal, mas um salto de âncora
+   (ou um navegador que segura o callback) pode deixar seção invisível.
+   Esta varredura roda junto do scroll e revela o que já está na tela. */
+let pendentes = [...document.querySelectorAll('[data-reveal],[data-split]')];
+function revela(el){
+  el.classList.add('in','split-in');
+  io.unobserve(el);
+  setTimeout(()=>el.classList.add('done'), 1400);   // trava o estado final
+}
+function varreReveal(){
+  if(!pendentes.length) return;
+  pendentes = pendentes.filter(el=>{
+    if(el.getBoundingClientRect().top >= innerHeight*.92) return true;
+    revela(el); return false;
+  });
+}
+addEventListener('load', varreReveal);
+
+/* ---------- 3. contadores ---------- */
+function contar(el){
+  if(el.dataset.contando) return;
+  el.dataset.contando = '1';
+  const alvo = +el.dataset.count, t0 = performance.now(), dur = 1400;
+  (function tick(now){
+    const p = clamp((now-t0)/dur,0,1);
+    el.textContent = Math.round(alvo*(1-Math.pow(1-p,3)));
+    if(p<1) requestAnimationFrame(tick); else el.textContent = alvo;
+  })(t0);
+}
+const contadores = [...document.querySelectorAll('[data-count]')];
+const cio = new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(!e.isIntersecting && e.boundingClientRect.top > 0) return;
+    contar(e.target); cio.unobserve(e.target);
+  });
+},{threshold:.6});
+contadores.forEach(el=>cio.observe(el));
+function varreContadores(){
+  contadores.forEach(el=>{ const r = el.getBoundingClientRect(); if(r.top < innerHeight*.85) contar(el); });
+}
+
+/* ---------- 4. mouse: coordenadas + parallax dos flutuantes ---------- */
+const floats = [...document.querySelectorAll('[data-float]')];
+let mx=0,my=0,cx=0,cy=0;
+addEventListener('mousemove',e=>{
+  mx = (e.clientX/innerWidth-.5);
+  my = (e.clientY/innerHeight-.5);
+  document.getElementById('coords').textContent =
+    String(Math.round(e.clientX)).padStart(4,'0')+' X · '+String(Math.round(e.clientY)).padStart(4,'0')+' Y';
+});
+
+/* ---------- 5. marquees (velocidade reage ao scroll) ---------- */
+const marquees = [
+  {el:document.querySelector('#marquee1 .track'), x:0, dir:-1, base:.55},
+  {el:document.querySelector('#marquee2 .track'), x:0, dir:1,  base:.45},
+];
+marquees.forEach(m=>{ m.w = m.el.scrollWidth/2; if(m.dir>0) m.x = -m.w; });
+
+/* ---------- 6. hero: cortina + parallax ---------- */
+const heroWrap=document.querySelector('.hero-wrap'), hero=document.getElementById('hero'),
+      heroTitle=document.getElementById('heroTitle'), heroBlob=document.getElementById('heroBlob'),
+      heroMascote=document.getElementById('heroMascote'), progress=document.getElementById('progress'),
+      nav=document.getElementById('nav');
+
+/* ---------- loop único de render ---------- */
+let lastY = scrollY, vel = 0, navHidden=false;
+function render(){
+  const y = scrollY;
+  vel = lerp(vel, (y-lastY), .12);
+  lastY = y;
+
+  varreReveal(); varreContadores();
+
+  /* progresso geral */
+  const total = document.body.scrollHeight - innerHeight;
+  progress.style.width = (y/total*100)+'%';
+
+  /* nav esconde descendo, volta subindo */
+  const shouldHide = y > innerHeight*.6 && vel > .5;
+  if(shouldHide !== navHidden){ navHidden = shouldHide; nav.classList.toggle('hide', shouldHide); }
+
+  /* hero: escala + fade conforme o conteúdo sobe por cima */
+  const hp = clamp(y / (heroWrap.offsetHeight - innerHeight), 0, 1);
+  hero.style.transform = `scale(${1 - hp*.14})`;
+  hero.style.filter = `blur(${hp*5}px)`;
+  hero.style.opacity = 1 - hp*.22;
+  heroTitle.style.transform = `translateY(${-hp*90}px)`;
+  heroBlob.style.transform = `translate(-50%,calc(-50% + ${hp*140}px)) scale(${1+hp*.22}) rotate(${hp*10}deg)`;
+  heroMascote.style.transform = `translate(${hp*90}px,${hp*120}px) rotate(${hp*12}deg)`;
+
+  /* parallax de mouse nos stickers e bolhas */
+  cx = lerp(cx, mx, .07); cy = lerp(cy, my, .07);
+  floats.forEach(f=>{
+    const k = +f.dataset.float * 100;
+    const base = f.dataset.rot || '';
+    f.style.translate = `${-cx*k}px ${-cy*k}px`;
+  });
+
+  /* marquees */
+  marquees.forEach(m=>{
+    m.x += m.dir * (m.base + Math.abs(vel)*.06);
+    if(m.dir<0 && m.x <= -m.w) m.x += m.w;
+    if(m.dir>0 && m.x >= 0) m.x -= m.w;
+    m.el.style.transform = `translateX(${m.x}px)`;
+  });
+
+}
+
+/* o rAF conduz a animação contínua (marquee, parallax);
+   o listener de scroll garante que o layout acompanhe mesmo onde o rAF é estrangulado */
+function frame(){ render(); requestAnimationFrame(frame); }
+if(!reduce){
+  requestAnimationFrame(frame);
+  addEventListener('scroll', render, {passive:true});
+  addEventListener('resize', render);
+  render();
+}
+
+/* ---------- 7. coverflow das aulas ----------
+   Porte do CoverflowCarousel: a posição é um índice fracionário e todo o resto
+   (inclinação, recuo, opacidade) é derivado da distância até o centro. O loop
+   é feito dobrando a distância pelo caminho mais curto do anel — sem clonar nó. */
+(function coverflow(){
+  const frame = document.getElementById('cfFrame');
+  if(!frame) return;
+  const stage   = document.getElementById('cfStage');
+  const cards   = [...stage.children];
+  const dots    = document.getElementById('cfDots');
+  const caption = document.getElementById('cfCaption');
+  const count   = cards.length;
+
+  const ROTATE = 44;     // graus que o primeiro vizinho inclina
+  const DEPTH  = .6;     // recuo do primeiro vizinho, em frações da largura do card
+  const FALLOFF= .56;    // expoente da distância: abaixo de 1 a inclinação afrouxa longe
+  const FADE   = .13;    // opacidade perdida por passo
+  const GAP    = .05;    // respiro entre cards
+  const LOOP   = true;
+
+  let pos = 0, target = 0, width = 0, raf = null, trava = null, selected = -1;
+  let drag = null;
+
+  const indexAt = p => ((Math.round(p) % count) + count) % count;
+
+  function paint(){
+    if(!width) return;
+    const pitch = width * (1 + GAP);
+    cards.forEach((card, index)=>{
+      let offset = index - pos;
+      if(LOOP){                                   // caminho mais curto do anel
+        offset = ((offset % count) + count) % count;
+        if(offset > count/2) offset -= count;
+      }
+      const distance = Math.abs(offset);
+      const ramp = Math.pow(distance, FALLOFF);
+      const tilt = Math.min(ROTATE * ramp, 82) * Math.sign(offset);
+      card.style.transform =
+        `translateX(calc(-50% + ${offset*pitch}px)) ` +
+        `translateZ(${-DEPTH*width*ramp}px) rotateY(${-tilt}deg)`;
+      // o card é teleportado a meia volta daqui, então precisa ter sumido antes
+      const edge = LOOP ? Math.min(1, Math.max(0, count/2 - distance)) : 1;
+      card.style.opacity = String(Math.max(0, 1 - FADE*distance) * edge);
+      card.style.zIndex = String(100 - Math.round(distance));
+    });
+  }
+
+  function mostra(i){
+    if(i === selected) return;
+    selected = i;
+    const c = cards[i];
+    caption.innerHTML =
+      `<div class="cf-fade"><span class="num">${c.dataset.num}</span>` +
+      `<h3>${c.dataset.titulo}</h3><p>${c.dataset.desc}</p>` +
+      `<dl><div><dt>duração</dt><dd>${c.dataset.dur}</dd></div>` +
+      `<div><dt>tipo</dt><dd>${c.dataset.tipo}</dd></div></dl></div>`;
+    [...dots.children].forEach((d,k)=>d.setAttribute('aria-current', String(k===i)));
+  }
+
+  function settle(alvo){
+    if(raf !== null) cancelAnimationFrame(raf);
+    clearTimeout(trava);
+    target = alvo;
+    mostra(indexAt(alvo));
+    const step = ()=>{
+      const falta = target - pos;
+      if(Math.abs(falta) < .0004){ pos = target; paint(); raf = null; return; }
+      pos += falta * .16;                        // ease-out exponencial, sem mola
+      paint();
+      raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    // rede de segurança: onde o rAF não roda (aba oculta), assume o destino
+    trava = setTimeout(()=>{ if(raf !== null){ cancelAnimationFrame(raf); raf = null; pos = target; paint(); } }, 700);
+  }
+
+  const limita = p => LOOP ? p : Math.max(0, Math.min(count-1, p));
+  const vaiPara = i => settle(limita(LOOP ? i + Math.round((target - i)/count)*count : i));
+  const anda = por => settle(limita(Math.round(target) + por));
+
+  /* dots */
+  cards.forEach((_,i)=>{
+    const b = document.createElement('button');
+    b.type = 'button'; b.setAttribute('aria-label', `Ir para a aula ${i+1}`);
+    b.addEventListener('click', ()=>vaiPara(i));
+    dots.appendChild(b);
+  });
+  document.getElementById('cfPrev').addEventListener('click', ()=>anda(-1));
+  document.getElementById('cfNext').addEventListener('click', ()=>anda(1));
+
+  /* arrasto */
+  frame.addEventListener('pointerdown', e=>{
+    if(raf !== null){ cancelAnimationFrame(raf); raf = null; }
+    clearTimeout(trava);
+    frame.setPointerCapture(e.pointerId);
+    target = pos;
+    drag = { id:e.pointerId, x:e.clientX, pos, v:0, t:performance.now() };
+  });
+  frame.addEventListener('pointermove', e=>{
+    if(!drag || drag.id !== e.pointerId) return;
+    const pitch = width * (1 + GAP);
+    if(!pitch) return;
+    const agora = performance.now(), antes = pos;
+    pos = limita(drag.pos - (e.clientX - drag.x)/pitch);
+    drag.v = ((pos - antes)/Math.max(agora - drag.t, 1)) * 1000;   // cards por segundo
+    drag.t = agora;
+    mostra(indexAt(pos));
+    paint();
+  });
+  const solta = e=>{
+    if(!drag || drag.id !== e.pointerId) return;
+    const v = drag.v; drag = null;
+    const levado = Math.max(-2, Math.min(2, v * .18));   // o impulso carrega, no máximo 2 cards
+    settle(limita(Math.round(pos + levado)));
+  };
+  frame.addEventListener('pointerup', solta);
+  frame.addEventListener('pointercancel', solta);
+  frame.addEventListener('keydown', e=>{
+    if(e.key === 'ArrowLeft'){ e.preventDefault(); anda(-1); }
+    else if(e.key === 'ArrowRight'){ e.preventDefault(); anda(1); }
+  });
+
+  /* a largura do card manda em tudo, então é a única medida que importa */
+  const mede = ()=>{ width = cards[0].offsetWidth; paint(); };
+  new ResizeObserver(mede).observe(frame);
+  mede();
+  mostra(0);
+})();
+
+/* ---------- 8. método: passos sticky trocando o mascote ---------- */
+const steps=[...document.querySelectorAll('.step')],
+      stepImgs=[...document.querySelectorAll('[data-step-img]')];
+const sio = new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(!e.isIntersecting) return;
+    steps.forEach(s=>s.classList.remove('on'));
+    e.target.classList.add('on');
+    const idx = +e.target.dataset.step;
+    stepImgs.forEach(img=>img.classList.toggle('on', +img.dataset.stepImg === idx));
+  });
+},{rootMargin:'-45% 0px -45% 0px'});
+steps.forEach(s=>sio.observe(s));
+
+/* ---------- 9. botões magnéticos ---------- */
+document.querySelectorAll('[data-magnetic]').forEach(btn=>{
+  // o estado apertado também por classe: no toque o :active nem sempre pinta
+  const solta = ()=>btn.classList.remove('is-press');
+  btn.addEventListener('pointerdown',()=>btn.classList.add('is-press'));
+  ['pointerup','pointercancel','pointerleave'].forEach(ev=>btn.addEventListener(ev,solta));
+  btn.addEventListener('mousemove',e=>{
+    const r = btn.getBoundingClientRect();
+    btn.style.setProperty('--mx', (e.clientX - r.left - r.width/2)*.28 + 'px');
+    btn.style.setProperty('--my', (e.clientY - r.top - r.height/2)*.30 + 'px');
+  });
+  btn.addEventListener('mouseleave',()=>{
+    btn.style.setProperty('--mx','0px');
+    btn.style.setProperty('--my','0px');
+  });
+});
+
+/* ---------- 10. accordion: fecha os outros ---------- */
+document.querySelectorAll('.acc details').forEach(d=>{
+  d.addEventListener('toggle',()=>{
+    if(d.open) document.querySelectorAll('.acc details').forEach(o=>{ if(o!==d) o.open=false; });
+  });
+});
+
+/* ---------- 11. relógio do rodapé ---------- */
+setInterval(()=>{
+  document.getElementById('clock').textContent = new Date().toLocaleTimeString('pt-BR');
+},1000);
+</script>
+</body>
+</html>
