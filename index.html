@@ -374,6 +374,7 @@ footer{background:var(--ink);color:var(--cream);padding:clamp(50px,7vw,90px) var
 /* barra de progresso do scroll */
 .progress{position:fixed;left:0;top:0;height:3px;background:var(--ink);width:0;z-index:1000}
 
+@media(max-width:900px){.scroll-cue{display:none}}   /* em tela estreita a dica encosta nos botões */
 @media(max-width:820px){
   h1.display{font-size:clamp(3.2rem,15.5vw,6rem)}
   h2.display{font-size:clamp(2rem,8.6vw,3.4rem)}
