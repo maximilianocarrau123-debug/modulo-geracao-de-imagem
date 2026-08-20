@@ -1,7 +1,22 @@
 # LP ESPUMA™ — molde v1
 
+**No ar:** https://modulo-geracao-de-imagem.vercel.app
+
 Landing page de um infoproduto **fictício** ("curso de lavar as mãos"), feita como
 demonstração do módulo de criação de LP.
+
+## Publicar
+
+O projeto na Vercel é `modulo-geracao-de-imagem`. Para republicar:
+
+```bash
+vercel deploy --prod --yes
+vercel alias set <url-do-deploy> modulo-geracao-de-imagem.vercel.app
+```
+
+Para o deploy sair automático a cada `git push`, é preciso conectar a conta do
+GitHub na Vercel uma vez (Settings → Login Connections) e depois rodar
+`vercel git connect`.
 
 ## Rodar
 
